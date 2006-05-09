@@ -4,10 +4,14 @@ use strict;
 use warnings;
 use base 'Catalyst::Controller';
 
-use lib "/home/miyagawa/svk/plagger/plugins/Plagger-Plugin-Store-DBIC/lib";
+#use Plagger::Schema::SQLite;
+use YAML;
+use List::Util qw(first);
 use Plagger::Schema::SQLite;
 
-my $schema = Plagger::Schema::SQLite->connect('dbi:SQLite:/home/miyagawa/plagger.db');
+my $config = YAML::LoadFile( PlaggerLDR->path_to('root', 'config.yaml') );
+my $module = first { $_->{module} eq 'Store::DBIC' } @{$config->{plugins}};
+my $schema = Plagger::Schema::SQLite->connect(@{$module->{config}->{connect_info}});
 
 sub default : Private {
     my($self, $c) = @_;
