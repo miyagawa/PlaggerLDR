@@ -4,7 +4,6 @@ use strict;
 use warnings;
 use base 'Catalyst::Controller';
 
-#use Plagger::Schema::SQLite;
 use YAML;
 use List::Util qw(first);
 use Plagger::Schema::SQLite;
