@@ -61,7 +61,7 @@ sub unread : Local {
     };
 
     my @terms = $c->stash->{is_all}
-        ? (undef, { order_by => 'id DESC',
+        ? (undef, { order_by => 'date DESC',
                     rows => 20,
                     page => $c->req->param('offset') / 20 + 1 })
         : ({ read => 0 });
