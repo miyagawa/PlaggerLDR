@@ -29,7 +29,7 @@ sub subs : Local {
             icon => "http://image.reader.livedoor.com/img/icon/default.gif", # TODO
             subscribe_id => $feed->id,
             unread_count => $unread,
-            folder => ($feed->tags)[0] || '',
+            folder => eval { ($feed->tags)[0]->name } || '',
             tags => [], # TODO
             rate => 0,
             modified_on => ($feed->updated ? $feed->updated->epoch : time),
@@ -71,7 +71,7 @@ sub unread : Local {
             body => $entry->body,
             modified_on => ($entry->date ? $entry->date->epoch : time),
             created_on => ($entry->date ? $entry->date->epoch : time),
-            category => $entry->tags->count ? ($entry->tags)[0]->name : undef,
+            category => eval { ($entry->tags)[0]->name } || undef,
             title => $entry->title,
             id => $entry->id,
         };
@@ -86,8 +86,8 @@ sub touch_all : Local {
 
     my $feed = $schema->resultset('Feed')->find( $c->req->param('subscribe_id') );
     for my $entry ($feed->entries({ read => 0 })) {
-#        $entry->read(1);
-#        $entry->update;
+        $entry->read(1);
+        $entry->update;
     }
 
     $c->stash->{json} = { ErrorCode => 0, isSuccess => 1 };
