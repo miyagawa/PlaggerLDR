@@ -15,7 +15,7 @@ Function.prototype.bind = function(thisObj){
 
 unsafeWindow.API.prototype.post = function(param, onload){
   var host;
-  if (this.ap == "/api/config/load") {
+  if (this.ap.match("^/api/config/")) {
     host = 'http://reader.livedoor.com';
   } else {
     host = yourhost;
