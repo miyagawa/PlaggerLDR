@@ -60,8 +60,14 @@ sub unread : Local {
         expires => time + 300,
     };
 
+    my @terms = $c->stash->{is_all}
+        ? (undef, { order_by => 'id DESC',
+                    rows => 20,
+                    page => $c->req->param('offset') / 20 + 1 })
+        : ({ read => 0 });
+
     my @items;
-    for my $entry ( $feed->entries({ read => 0 }) ) {
+    for my $entry ( $feed->entries(@terms) ) {
         push @items, {
             link => $entry->link,
             enclosure => undef,
@@ -78,6 +84,12 @@ sub unread : Local {
     $data->{items} = \@items;
 
     $c->stash->{json} = $data;
+}
+
+sub all : Local {
+    my($self, $c) = @_;
+    $c->stash->{is_all} = 1;
+    $c->forward('unread');
 }
 
 sub touch_all : Local {
